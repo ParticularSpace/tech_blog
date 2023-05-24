@@ -12,36 +12,22 @@
 
 <body>
 
-
-
   <nav class="navbar">
     <div class="container-fluid">
-      <ul class="navbar-menu">
-        {{!-- {{#if logged_in}} --}}
+      <ul class="navbar-menu"> 
         <li class="navbar-item dropdown">
-          <img src="{{profilePicture}}" alt="Profile Picture" class="dropdown-toggle nav-profile-pic"
-            id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <div class="dropdown-menu" aria-labelledby="profileDropdown">
-            <a href="/dashboard" class="dropdown-item">Home</a>
-            <a href="/account" class="dropdown-item">Account: {{username}}</a>
-            <a href="/wallet" class="dropdown-item">Wallet: {{walletBalance}}</a>
-            <a id="logout-button" class="dropdown-item">Log Out</a>
-          </div>
+          <img src="https://via.placeholder.com/40" alt="Profile Picture" class="dropdown-toggle nav-profile-pic">
         </li>
         <li class="navbar-item dropdown">
           <a href="#" class="navbar-link dropdown-toggle" data-bs-toggle="dropdown">OPTIONS</a>
           <ul class="dropdown-menu">
-            <li><a href="/games" class="dropdown-item">FEED</a></li>
-            <li><a href="/games" class="dropdown-item disabled">ACCOUNT</a></li>
-            <li><a href="/games" class="dropdown-item disabled">POST</a></li>
-            <li><a href="/games" class="dropdown-item disabled">EXPLORE</a></li>
+            <li><a href="/feed" class="dropdown-item">FEED</a></li>
+            <li><a href="/account" class="dropdown-item disabled">ACCOUNT</a></li>
+            <li><a href="/post" class="dropdown-item disabled">POST</a></li>
+            <li><a href="/explore" class="dropdown-item disabled">EXPLORE</a></li>
           </ul>
-        </li>
-        {{!-- {{else}}
-        <li class="navbar-item"><a href="/login" class="navbar-link">Log In</a></li>
-        <li class="navbar-item"><a href="/register" class="navbar-link">Register</a></li>
-        {{/if}} --}}
-      </ul>
+        </li> 
+       </ul>
       <a href="/dashboard" class="navbar-brand"><img src="/images/clover.png" alt="tech_blog" class="nav-icon">
       </a>
     </div>
@@ -54,4 +40,4 @@
 
 </body>
 
-</html>
+</html> 
