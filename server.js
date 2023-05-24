@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
-// const routes = require('./routes');
+const routes = require('./routes');
 const sequelize = require('./config/connection');
 const cookieParser = require('cookie-parser');
 const hbs = exphbs.create({});
@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -41,7 +42,7 @@ app.use(
   });
 
 
-    // app.use(routes);
+app.use(routes);
 
 
 sequelize.sync({ force: false }).then(() => { // Sync the database models with the database

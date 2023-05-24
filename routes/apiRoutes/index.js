@@ -1,9 +1,9 @@
-const router = require('express').Router(); 
-const userRoutes = require('./userRoutes'); 
+const express = require('express');
+const router = express.Router();
 
-
-
-router.use('/users', userRoutes);
-
+router.use((req, res, next) => {
+  console.log('Time:', Date.now());
+  next();
+});
 
 module.exports = router;
