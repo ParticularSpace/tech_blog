@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 
-router.use((req, res, next) => {
-  console.log('Time:', Date.now());
-  next();
-});
+const userRoutes = require('./userRoutes');
+
+router.use('/user', userRoutes);
 
 module.exports = router;
