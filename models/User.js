@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt'); // Import the bcrypt library for password hash
 
 class User extends Model {
   async checkPassword(loginPw) {
-    return await bcrypt.compare(loginPw, this.password); // Compare the login password with the hashed password
+    console.log("loginPw: ", loginPw.password);
+    console.log("hashed password: ", this.password);
+    return await bcrypt.compare(loginPw.password, this.password);
   }
 }
 
@@ -29,6 +31,21 @@ User.init(
             isEmail: true, // Uses a regular expression to validate whether the email is in the correct format
         },
     },
+    date_of_birth: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+            isDate: true, 
+        },
+    },
+    phone_number: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            len: [10],
+        },
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -42,11 +59,11 @@ User.init(
     },
   },
   {
-    sequelize, // Connects the model to the Sequelize instance
-    timestamps: false, 
-    freezeTableName: true, 
-    underscored: true, 
-    modelName: 'user', 
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'user',
   }
 );
 
