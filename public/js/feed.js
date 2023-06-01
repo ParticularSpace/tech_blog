@@ -1,12 +1,12 @@
 // Assuming you have elements with these classes in your HTML
 const likeButtons = document.querySelectorAll('.like-button');
-const commentButtons = document.querySelectorAll('.comment-button');
 
 // Attach event listeners to like buttons
 likeButtons.forEach(button => {
   button.addEventListener('click', function(e) {
     e.preventDefault();
     const postId = this.dataset.postId; 
+    const likeCountElement = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
 
     fetch(`api/user/posts/${postId}/like`, {
       method: 'POST',
@@ -20,16 +20,20 @@ likeButtons.forEach(button => {
       if (data.success) {
         if (this.classList.contains('liked')) {
           this.classList.remove('liked');
+          // Decrease likes count
+          likeCountElement.textContent = parseInt(likeCountElement.textContent) - 1;
         }
         else {
           this.classList.add('liked');
-
+          // Increase likes count
+          likeCountElement.textContent = parseInt(likeCountElement.textContent) + 1;
         }
       }
     })
     .catch(error => console.error('Error:', error));
   });
 });
+
 
 
 // // Attach event listeners to comment buttons

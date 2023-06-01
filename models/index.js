@@ -15,6 +15,9 @@ User.hasMany(Like, {
   foreignKey: 'user_id'
 });
 
+User.belongsToMany(Post, { through: Like, as: 'LikedPosts', foreignKey: 'user_id' });
+
+
 Post.belongsTo(User, {
   foreignKey: 'user_id'
 });
@@ -26,6 +29,9 @@ Post.hasMany(Comment, {
 Post.hasMany(Like, {
   foreignKey: 'post_id'
 });
+
+Post.belongsToMany(User, { through: Like, as: 'Likers', foreignKey: 'post_id' });
+
 
 Comment.belongsTo(User, {
   foreignKey: 'user_id'

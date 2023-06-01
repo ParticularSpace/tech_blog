@@ -121,42 +121,38 @@ router.post('/post', withAuth, async (req, res) => {
 
 
 
-
-
-router.post('/posts/:postId/like', withAuth, async (req, res) => {
+router.post('/posts/:id/like', async (req, res) => {
     try {
-      // Check if a like from this user for this post already exists
-      const existingLike = await Like.findOne({
-        where: {
-          post_id: req.params.postId,
-          user_id: req.session.user_id,
-        }
-      });
-  
-      if (req.body.like) {
-        // If the user is liking the post and a like doesn't exist, create one
-        if (!existingLike) {
-          await Like.create({
-            post_id: req.params.postId,
-            user_id: req.session.user_id,
-          });
-        }
-      } else {
-        // If the user is unliking the post and a like exists, remove it
-        if (existingLike) {
-          await existingLike.destroy();
-        }
+      const postId = req.params.id;
+      const userId = req.session.userId;  // or however you track logged in users
+
+      const post = await Post.findByPk(postId);
+      const user = await User.findByPk(userId);
+
+      if (!post || !user) {
+        // either post or user does not exist
+        return res.status(404).json({ message: 'Post or user not found' });
       }
-  
-      // Return a success response
-      res.json({ success: true });
+
+      if (req.body.like) {
+        // User wants to like the post
+        await post.addLikers(user);
+      } else {
+        // User wants to unlike the post
+        await post.removeLikers(user);
+      }
+
+      const updatedLikesCount = await post.countLikers();
+
+      res.json({ success: true, likesCount: updatedLikesCount });
   
     } catch (err) {
-      // Handle errors
       console.error(err);
       res.status(500).json({ success: false });
     }
-  });
+});
+
+
   
   
 
