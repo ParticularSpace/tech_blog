@@ -1,7 +1,8 @@
 const exppress = require('express');
 const router = exppress.Router();
-const { User, Post } = require('../../models');
+const { User, Post, Like } = require('../../models');
 const withAuth = require('../../utils/auth');
+const sequelize = require('../../config/connection');
 
 
 router.get('/', (req, res) => {
@@ -21,28 +22,39 @@ router.get('/dashboard', async (req, res) => {
             return;
         }
 
-        // Fetch all posts and associated data
         const postsData = await Post.findAll({
-            include: [
-                {
-                    model: User,
-                    attributes: ['username'],
-                },
+            include: [ { model: User, attributes: ['username'] } ]
+        });
+        
+        const likesData = await Like.findAll({
+            attributes: [
+                'post_id',
+                [sequelize.fn('count', sequelize.col('id')), 'likes_count']
             ],
+            group: ['post_id']
+        });
+        
+        // Convert likesData to a convenient map
+        const likesCountMap = likesData.reduce((map, like) => {
+            map[like.post_id] = like.likes_count;
+            return map;
+        }, {});
+        
+        // Combine posts and likes
+        const posts = postsData.map((post) => {
+            const postPlain = post.get({ plain: true });
+            postPlain.likes_count = likesCountMap[postPlain.id] || 0; // Use 0 if no likes
+            return postPlain;
         });
 
-        console.log(postsData, 'postsData');
-
-        // Serialize data so the template can read it
-        const posts = postsData.map((post) => post.get({ plain: true }));
-
-        console.log(posts, 'posts');
-
-        // Pass serialized data and session flag into template
+        console.log(posts, 'posts')
+        
         res.render('dashboard', { 
             posts, 
             logged_in: req.session.logged_in 
         });
+        
+
     } catch (err) {
         res.status(500).json(err);
     }

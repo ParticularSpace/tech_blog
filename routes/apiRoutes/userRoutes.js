@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
-const { User, Post, Comment } = require('../../models');
+const { User, Post, Comment, Like } = require('../../models');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
@@ -115,6 +115,59 @@ router.post('/post', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+
+
+
+
+
+
+// Route to like a post
+router.post('/posts/:id/like', async (req, res) => {
+    try {
+        // Create a new like
+        await Like.create({
+            user_id: req.session.user_id,
+            post_id: req.params.id
+        });
+
+       // Fetch the post from the database
+       const post = await Post.findByPk(req.params.id);
+
+       // Fetch the associated likes
+       const likes = await post.getLikes();
+
+       console.log(likes, 'likes');
+       
+        res.json({ success: true, likes: likes.length});
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: error.message });
+    }
+});
+
+
+
+
+
+
+
+// Route to comment on a post
+router.post('/posts/:id/comment', async (req, res) => {
+    try {
+        const commentData = await Comment.create({
+            comment_text: req.body.comment,
+            user_id: req.session.user_id,
+            post_id: req.params.id
+        });
+
+        res.status(200).json({ success: true });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
 
 
 module.exports = router;
