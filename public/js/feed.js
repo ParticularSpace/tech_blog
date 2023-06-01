@@ -8,7 +8,7 @@ likeButtons.forEach(button => {
     const postId = this.dataset.postId; 
     const likeCountElement = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
 
-    fetch(`api/user/posts/${postId}/like`, {
+    fetch(`/api/user/posts/${postId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

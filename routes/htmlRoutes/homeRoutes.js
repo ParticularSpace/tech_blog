@@ -22,6 +22,12 @@ router.get('/dashboard', async (req, res) => {
             return;
         }
 
+        // Fetch user first
+        const user = await User.findOne({
+            where: { id: req.session.user_id },
+            include: { model: Post, as: 'likedPosts' }
+        });
+
         const postsData = await Post.findAll({
             include: [ { model: User, attributes: ['username'] } ]
         });
@@ -48,6 +54,10 @@ router.get('/dashboard', async (req, res) => {
         const posts = postsData.map((post) => {
             const postPlain = post.get({ plain: true });
             postPlain.likes_count = likesCountMap[post.id] || 0;
+
+            // Check if user has liked this post
+            postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
+
             return postPlain;
         });
 
@@ -63,6 +73,7 @@ router.get('/dashboard', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
 
 
 

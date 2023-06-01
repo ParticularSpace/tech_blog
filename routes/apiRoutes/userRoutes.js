@@ -118,16 +118,25 @@ router.post('/post', withAuth, async (req, res) => {
 });
 
 
-
-
-
 router.post('/posts/:id/like', async (req, res) => {
+    console.log('route hit');
+    console.log(req.body, 'req.body');
     try {
       const postId = req.params.id;
-      const userId = req.session.userId;  // or however you track logged in users
+      const userId = req.session.user_id;  // or however you track logged in users
 
-      const post = await Post.findByPk(postId);
-      const user = await User.findByPk(userId);
+      console.log(postId, 'postId');
+        console.log(req.session.user_id, 'req.session RIGHT HERE YOOOOOOO');
+
+      const post = await Post.findByPk(postId, {
+        include: { model: User, as: 'likers' }
+    });
+    const user = await User.findByPk(userId, {
+        include: { model: Post, as: 'likedPosts' }
+    });
+    
+    console.log(post, 'post HERE !!!!!');
+    console.log(user, 'user HERE !!!!!');
 
       if (!post || !user) {
         // either post or user does not exist
@@ -137,12 +146,15 @@ router.post('/posts/:id/like', async (req, res) => {
       if (req.body.like) {
         // User wants to like the post
         await post.addLikers(user);
-      } else {
+    } else {
         // User wants to unlike the post
         await post.removeLikers(user);
-      }
+    }
+    
 
       const updatedLikesCount = await post.countLikers();
+
+      console.log(updatedLikesCount, 'updatedLikesCount');
 
       res.json({ success: true, likesCount: updatedLikesCount });
   
@@ -151,16 +163,6 @@ router.post('/posts/:id/like', async (req, res) => {
       res.status(500).json({ success: false });
     }
 });
-
-
-  
-  
-
-
-
-
-
-
 
 // Route to comment on a post
 router.post('/posts/:id/comment', async (req, res) => {
