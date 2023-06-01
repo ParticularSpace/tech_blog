@@ -3,6 +3,7 @@ const sequelize = require('../../config/connection');
 const { User, Post, Comment, Like } = require('../../models');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const withAuth = require('../../utils/auth');
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -97,7 +98,7 @@ router.post('/logout', async (req, res) => {
 });
 
 // Route to post a new post
-router.post('/post', async (req, res) => {
+router.post('/post', withAuth, async (req, res) => {
     console.log(req.body, 'req.body in /post');
     try {
         // Assuming user_id is stored in req.session.user_id when the user logs in
@@ -122,29 +123,42 @@ router.post('/post', async (req, res) => {
 
 
 
-// Route to like a post
-router.post('/posts/:id/like', async (req, res) => {
+router.post('/posts/:postId/like', withAuth, async (req, res) => {
     try {
-        // Create a new like
-        await Like.create({
+      // Check if a like from this user for this post already exists
+      const existingLike = await Like.findOne({
+        where: {
+          post_id: req.params.postId,
+          user_id: req.session.user_id,
+        }
+      });
+  
+      if (req.body.like) {
+        // If the user is liking the post and a like doesn't exist, create one
+        if (!existingLike) {
+          await Like.create({
+            post_id: req.params.postId,
             user_id: req.session.user_id,
-            post_id: req.params.id
-        });
-
-       // Fetch the post from the database
-       const post = await Post.findByPk(req.params.id);
-
-       // Fetch the associated likes
-       const likes = await post.getLikes();
-
-       console.log(likes, 'likes');
-       
-        res.json({ success: true, likes: likes.length});
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
+          });
+        }
+      } else {
+        // If the user is unliking the post and a like exists, remove it
+        if (existingLike) {
+          await existingLike.destroy();
+        }
+      }
+  
+      // Return a success response
+      res.json({ success: true });
+  
+    } catch (err) {
+      // Handle errors
+      console.error(err);
+      res.status(500).json({ success: false });
     }
-});
+  });
+  
+  
 
 
 

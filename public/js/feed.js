@@ -10,33 +10,27 @@ likeButtons.forEach(button => {
 
     fetch(`api/user/posts/${postId}/like`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ like: !this.classList.contains('liked') }) // Send whether the user is liking or unliking the post
     })
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-
         if (this.classList.contains('liked')) {
           this.classList.remove('liked');
-
-          // Decrement the likes count
-          const likesCountElement = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
-          const currentCount = Number(likesCountElement.textContent);
-          likesCountElement.textContent = currentCount - 1;
-
         }
         else {
           this.classList.add('liked');
 
-          // Increment the likes count
-          const likesCountElement = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
-          const currentCount = Number(likesCountElement.textContent);
-          likesCountElement.textContent = currentCount + 1;
         }
       }
     })
     .catch(error => console.error('Error:', error));
   });
 });
+
 
 // // Attach event listeners to comment buttons
 // commentButtons.forEach(button => {

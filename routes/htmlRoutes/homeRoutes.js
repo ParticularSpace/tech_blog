@@ -33,17 +33,21 @@ router.get('/dashboard', async (req, res) => {
             ],
             group: ['post_id']
         });
+
+        console.log(likesData, 'likesData')
         
-        // Convert likesData to a convenient map
-        const likesCountMap = likesData.reduce((map, like) => {
-            map[like.post_id] = like.likes_count;
-            return map;
-        }, {});
+        let likesCountMap = {};
+        likesData.forEach((like) => {
+          likesCountMap[like.dataValues.post_id] = like.dataValues.likes_count;
+        });
+        
+
+        console.log(likesCountMap, 'likesCountMap')
         
         // Combine posts and likes
         const posts = postsData.map((post) => {
             const postPlain = post.get({ plain: true });
-            postPlain.likes_count = likesCountMap[postPlain.id] || 0; // Use 0 if no likes
+            postPlain.likes_count = likesCountMap[post.id] || 0;
             return postPlain;
         });
 
