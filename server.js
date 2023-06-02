@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('/uploads', express.static('uploads')); // Serve static files from the "uploads" directory
 
 app.use(
     session({

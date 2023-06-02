@@ -117,6 +117,11 @@ router.get('/account', withAuth, async (req, res) => {
         // serialize the data before passing to template
         const user = userData.get({ plain: true });
 
+          // check if user has a profile picture, if not set a default one
+          if (!user.profilePicture) {
+            user.profilePicture = '/images/solar-energy.png'; // replace with your default image path
+        }
+
         // pass the data to the template
         res.render('account', { user });
 

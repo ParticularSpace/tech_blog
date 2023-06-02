@@ -1,9 +1,14 @@
 const router = require('express').Router();
-const sequelize = require('../../config/connection');
 const { User, Post, Comment, Like } = require('../../models');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const withAuth = require('../../utils/auth');
+const upload = require('../../config/s3'); // s3 middleware
+
+
+// AWS S3 bucket configuration
+const bucketName = process.env.AWS_S3_BUCKET; 
+const region = process.env.AWS_REGION; 
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -179,6 +184,54 @@ router.post('/posts/:id/comment', async (req, res) => {
     }
 });
 
+
+// Upload
+router.post('/upload', upload.single('upload-picture'), async (req, res) => {
+    console.log('/upload route hit !!!');
+    const fileName = req.file.key; // the key of the uploaded file
+    console.log(fileName, 'fileName here look this is it');
+    const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`;
+
+    console.log(fileUrl, 'fileUrl');
+  
+    // Update the session
+    req.session.user.profile_picture = fileUrl;
+
+    console.log(req.session.user.profile_picture, 'req.session.user.profilePicture');
+  
+    // Update the database
+    try {
+      await User.update(
+        { profile_picture: fileUrl }, // new data to update
+        { where: { id: req.session.user.id } } // where clause
+      );
+      
+    } catch (error) {
+      console.error('Failed to update profile_picture in the database:', error);
+    }
+  
+    res.json({ message: 'File uploaded successfully', fileUrl: fileUrl });
+  });
+  
+  // update profile picture GOOD
+  router.put('/update/profile-picture', withAuth, async (req, res) => {
+  
+    try {
+        const user = await User.findOne({ where: { id: req.session.user.id } });
+      
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+  
+        const newPicturePath = req.body.location; // Use req.body.location to get the URL
+  
+        await user.update({ profile_picture: newPicturePath });
+        res.json({ message: 'Profile picture updated successfully', newPictureUrl: user.profile_picture });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while updating the profile picture' });
+    }
+  });
 
 
 
