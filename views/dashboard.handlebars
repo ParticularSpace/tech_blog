@@ -36,13 +36,14 @@
                         </div>
                         <!-- End comment input field -->
                     </div>
-                    <div id="comments">
+                    <div class="comments">
                         <ul class="list-group list-group-flush">
                             {{#each this.comments}}
-                            <li class="list-group-item"><strong>{{this.username}}:</strong> {{this.content}}</li>
+                            <li class="list-group-item"><strong>{{this.user.username}}:</strong> {{this.content}}</li>
                             {{/each}}
                         </ul>
                     </div>
+
 
                 </div>
                 {{/each}}

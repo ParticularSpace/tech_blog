@@ -46,7 +46,7 @@ router.get('/dashboard', async (req, res) => {
                 },
                 { 
                     model: Comment,
-                    attributes: ['id', 'content', 'created_at', 'user_id'],
+                    attributes: ['id', 'content', 'user_id'],
                     include: {
                         model: User, 
                         attributes: ['username'] 
@@ -57,6 +57,7 @@ router.get('/dashboard', async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
         
+        console.log(postsData, 'postsData in dashboard.js');
         
         const likesData = await Like.findAll({
             attributes: [
@@ -76,12 +77,18 @@ router.get('/dashboard', async (req, res) => {
             const postPlain = post.get({ plain: true });
             postPlain.likes_count = likesCountMap[post.id] || 0;
             postPlain.comments = post.comments || [];
-
+          
             // Check if user has liked this post
             postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
-
+            
+            // Log each comment separately for testing
+            postPlain.comments.forEach(comment => console.log(comment.get({ plain: true })));
+            
+            console.log(postPlain, 'postPlain in dashboard.js');
             return postPlain;
-        });
+          });
+          
+
 
         res.render('dashboard', { 
             posts, 
@@ -89,6 +96,7 @@ router.get('/dashboard', async (req, res) => {
             profile_picture: req.session.profile_picture,
             username: req.session.username
         });
+        
     } catch (err) {
         console.error(err);
         res.status(500).json(err);
