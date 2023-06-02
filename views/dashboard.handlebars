@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -21,13 +22,8 @@
                     <div class="card-body">
                         <h5 class="card-title">{{this.title}}</h5>
                         <p class="card-text">{{this.content}}</p>
-                        <!-- ... -->
-                        <a href="#" class="btn btn-primary like-button" data-post-id="{{this.id}}"> ♡
+                        <a href="#" class="btn btn-primary like-button {{#if this.isLikedByCurrentUser}}liked{{/if}}" data-post-id="{{this.id}}"> ♡
                             <span class="likes-count" data-post-id="{{this.id}}">{{this.likes_count}}</span>
-                        </a>
-                        <!-- ... -->
-
-                        <span class="likes-count" data-post-id="{{this.id}}">{{this.likes}}</span>
                         </a>
                         <a href="#" class="btn btn-secondary comment-button"> 💬 </a>
                         {{! <a href="#" class="btn btn-success">Share</a> }}

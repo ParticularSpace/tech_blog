@@ -28,9 +28,16 @@ router.get('/dashboard', async (req, res) => {
             include: { model: Post, as: 'likedPosts' }
         });
 
+        if (!user) {
+            res.status(404).json({ message: 'No user with this id!' });
+            return;
+        }
+
         const postsData = await Post.findAll({
-            include: [ { model: User, attributes: ['username'] } ]
+            include: [ { model: User, attributes: ['username'] } ],
+            order: [['createdAt', 'DESC']]
         });
+        
         
         const likesData = await Like.findAll({
             attributes: [
@@ -65,11 +72,10 @@ router.get('/dashboard', async (req, res) => {
         
 
     } catch (err) {
+        console.error(err);
         res.status(500).json(err);
     }
 });
-
-
 
 
 router.get('/login', (req, res) => {   
