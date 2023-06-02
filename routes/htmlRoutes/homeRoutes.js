@@ -1,6 +1,6 @@
 const exppress = require('express');
 const router = exppress.Router();
-const { User, Post, Like } = require('../../models');
+const { User, Post, Like, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 const sequelize = require('../../config/connection');
 
@@ -25,7 +25,12 @@ router.get('/dashboard', async (req, res) => {
         // Fetch user first
         const user = await User.findOne({
             where: { id: req.session.user_id },
-            include: { model: Post, as: 'likedPosts' }
+            include: [
+                { 
+                    model: Post, 
+                    as: 'likedPosts' 
+                }
+            ]
         });
 
         if (!user) {
@@ -34,7 +39,21 @@ router.get('/dashboard', async (req, res) => {
         }
 
         const postsData = await Post.findAll({
-            include: [ { model: User, attributes: ['username'] } ],
+            include: [
+                { 
+                    model: User, 
+                    attributes: ['username'] 
+                },
+                { 
+                    model: Comment,
+                    attributes: ['id', 'content', 'created_at', 'user_id'],
+                    include: {
+                        model: User, 
+                        attributes: ['username'] 
+                    },
+                    order: [['created_at', 'DESC']], // order comments by newest first
+                }
+            ],
             order: [['createdAt', 'DESC']]
         });
         
@@ -52,10 +71,11 @@ router.get('/dashboard', async (req, res) => {
           likesCountMap[like.dataValues.post_id] = like.dataValues.likes_count;
         });
         
-        // Combine posts and likes
+        // Combine posts, likes, and comments
         const posts = postsData.map((post) => {
             const postPlain = post.get({ plain: true });
             postPlain.likes_count = likesCountMap[post.id] || 0;
+            postPlain.comments = post.comments || [];
 
             // Check if user has liked this post
             postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
@@ -63,19 +83,18 @@ router.get('/dashboard', async (req, res) => {
             return postPlain;
         });
 
-        
         res.render('dashboard', { 
             posts, 
             logged_in: req.session.logged_in,
-            profile_picture: req.session.profile_picture
+            profile_picture: req.session.profile_picture,
+            username: req.session.username
         });
-        
-
     } catch (err) {
         console.error(err);
         res.status(500).json(err);
     }
 });
+
 
 
 router.get('/login', (req, res) => {   

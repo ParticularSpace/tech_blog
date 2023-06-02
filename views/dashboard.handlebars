@@ -22,17 +22,28 @@
                     <div class="card-body">
                         <h5 class="card-title">{{this.title}}</h5>
                         <p class="card-text">{{this.content}}</p>
-                        <a href="#" class="btn btn-primary like-button {{#if this.isLikedByCurrentUser}}liked{{/if}}" data-post-id="{{this.id}}"> ♡
+                        <a href="#" class="btn btn-primary like-button {{#if this.isLikedByCurrentUser}}liked{{/if}}"
+                            data-post-id="{{this.id}}"> ♡
                             <span class="likes-count" data-post-id="{{this.id}}">{{this.likes_count}}</span>
                         </a>
-                        <a href="#" class="btn btn-secondary comment-button"> 💬 </a>
-                        {{! <a href="#" class="btn btn-success">Share</a> }}
+                        <a href="#" class="btn btn-secondary comment-button" data-post-id="{{this.id}}"> 💬 </a>
+                        <!-- Comment input field -->
+                        <div class="input-group mb-3 comment-input" data-post-id="{{this.id}}" style="display: none;">
+                            <input type="text" class="form-control" placeholder="Add a comment...">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">Post</button>
+                            </div>
+                        </div>
+                        <!-- End comment input field -->
                     </div>
-                    <ul class="list-group list-group-flush">
-                        {{#each this.comments}}
-                        <li class="list-group-item">{{this}}</li>
-                        {{/each}}
-                    </ul>
+                    <div id="comments">
+                        <ul class="list-group list-group-flush">
+                            {{#each this.comments}}
+                            <li class="list-group-item"><strong>{{this.username}}:</strong> {{this.content}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+
                 </div>
                 {{/each}}
             </div>

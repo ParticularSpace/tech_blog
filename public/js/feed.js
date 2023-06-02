@@ -36,28 +36,51 @@ likeButtons.forEach(button => {
 
 
 
-// // Attach event listeners to comment buttons
-// commentButtons.forEach(button => {
-//   button.addEventListener('click', function(e) {
-//     e.preventDefault();
-//     const postId = this.dataset.postId;
-//     const comment = prompt("Enter your comment:");
+const commentButtons = document.querySelectorAll('.comment-button');
+const commentInputs = document.querySelectorAll('.comment-input');
+const commentSubmitButtons = document.querySelectorAll('.comment-input .btn');
 
-//     if (comment) {
-//       fetch(`/posts/${postId}/comment`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ comment: comment }),
-//       })
-//       .then(response => response.json())
-//       .then(data => {
-//         if (data.success) {
-//           // Add the comment to the page, or do whatever you want to indicate success
-//         }
-//       })
-//       .catch(error => console.error('Error:', error));
-//     }
-//   });
-// });
+commentButtons.forEach(button => {
+  button.addEventListener('click', function(e) {
+    e.preventDefault();
+    const postId = this.dataset.postId;
+
+    // Find the corresponding comment input field and show it
+    const commentInput = Array.from(commentInputs).find(input => input.dataset.postId === postId);
+    commentInput.style.display = 'flex';
+  });
+});
+
+commentSubmitButtons.forEach(button => {
+  button.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // Find the closest parent comment input field
+    const commentInputField = this.closest('.comment-input');
+
+    const postId = commentInputField.dataset.postId;
+    const comment = commentInputField.querySelector('input').value;
+
+    if (comment) {
+      fetch(`api/user/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment: comment }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // If successful, append the new comment to the comments section
+          const commentElement = document.createElement('div'); // Or whatever element you want to use
+          console.log(data, 'data in feed.js');
+          commentElement.textContent = data.comment.content; // Assuming the comment has a "content" field
+          document.querySelector('#comments').appendChild(commentElement); // Assuming you have a div with id="comments" for displaying comments
+        }
+      })
+      .catch(error => console.error('Error:', error));
+      
+    }
+  });
+});

@@ -77,6 +77,7 @@ router.post('/login', async (req, res) => {
             req.session.logged_in = true;
             req.session.user_id = userData.id;
             req.session.profile_picture = userData.profile_picture;
+            req.session.username = userData.username;
 
             res.json({ user: userData, message: 'You are now logged in!' });
         });
@@ -171,19 +172,33 @@ router.post('/posts/:id/like', async (req, res) => {
 });
 
 // Route to comment on a post
-router.post('/posts/:id/comment', async (req, res) => {
+router.post('/posts/:id/comment', withAuth, async (req, res) => {
     try {
+        const postData = await Post.findOne({ where: { id: req.params.id } });
+        if (!postData) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
         const commentData = await Comment.create({
-            comment_text: req.body.comment,
+            content: req.body.comment,
             user_id: req.session.user_id,
             post_id: req.params.id
         });
 
-        res.status(200).json({ success: true });
+        res.status(200).json({ 
+            success: true, 
+            comment: {
+              content: commentData.content,
+              id: commentData.id,
+              user_id: commentData.user_id
+            } 
+          });
+          
     } catch (err) {
         res.status(500).json(err);
     }
 });
+
 
 
 // Upload
