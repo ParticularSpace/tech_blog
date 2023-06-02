@@ -76,6 +76,7 @@ router.post('/login', async (req, res) => {
             req.session.email = userData.email;
             req.session.logged_in = true;
             req.session.user_id = userData.id;
+            req.session.profile_picture = userData.profile_picture;
 
             res.json({ user: userData, message: 'You are now logged in!' });
         });
@@ -193,11 +194,15 @@ router.post('/upload', upload.single('upload-picture'), async (req, res) => {
     const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`;
 
     console.log(fileUrl, 'fileUrl');
+
+    console.log(req.session, 'req.session in /upload HERE !!!!!');
+
+
   
     // Update the session
-    req.session.user.profile_picture = fileUrl;
+    req.session.profile_picture = fileUrl;
 
-    console.log(req.session.user.profile_picture, 'req.session.user.profilePicture');
+    console.log(req.session.profile_picture, 'req.session.user.profilePicture');
   
     // Update the database
     try {
@@ -213,11 +218,11 @@ router.post('/upload', upload.single('upload-picture'), async (req, res) => {
     res.json({ message: 'File uploaded successfully', fileUrl: fileUrl });
   });
   
-  // update profile picture GOOD
-  router.put('/update/profile-picture', withAuth, async (req, res) => {
+  // update profile picture 
+  router.put('/update', withAuth, async (req, res) => {
   
     try {
-        const user = await User.findOne({ where: { id: req.session.user.id } });
+        const user = await User.findOne({ where: { id: req.session.user_id } });
       
         if (!user) {
             return res.status(404).json({ error: 'User not found' });

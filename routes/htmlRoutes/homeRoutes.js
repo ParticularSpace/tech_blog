@@ -39,16 +39,11 @@ router.get('/dashboard', async (req, res) => {
             ],
             group: ['post_id']
         });
-
-        console.log(likesData, 'likesData')
         
         let likesCountMap = {};
         likesData.forEach((like) => {
           likesCountMap[like.dataValues.post_id] = like.dataValues.likes_count;
         });
-        
-
-        console.log(likesCountMap, 'likesCountMap')
         
         // Combine posts and likes
         const posts = postsData.map((post) => {
@@ -61,11 +56,11 @@ router.get('/dashboard', async (req, res) => {
             return postPlain;
         });
 
-        console.log(posts, 'posts')
         
         res.render('dashboard', { 
             posts, 
-            logged_in: req.session.logged_in 
+            logged_in: req.session.logged_in,
+            profile_picture: req.session.profile_picture
         });
         
 
@@ -97,38 +92,38 @@ router.get('/signup', (req, res) => {
 
 router.get('/account', withAuth, async (req, res) => {
     try {
-        // fetch the user data from the database
+    
         const userData = await User.findOne({
             where: {
                 email: req.session.email
             },
-            attributes: { exclude: ['password'] }  // exclude the password from the returned data
+            attributes: { exclude: ['password'] }  
         });
         
-
         console.log(userData, 'userData')
 
         if (!userData) {
-            // if no user is found, return an error
+          
             res.status(404).json({ message: 'No user found with this email!' });
             return;
         }
 
-        // serialize the data before passing to template
+     
         const user = userData.get({ plain: true });
 
-          // check if user has a profile picture, if not set a default one
-          if (!user.profilePicture) {
-            user.profilePicture = '/images/solar-energy.png'; // replace with your default image path
-        }
 
-        // pass the data to the template
-        res.render('account', { user });
+        
+        res.render('account', {
+             user,
+            logged_in: req.session.logged_in,
+            profile_picture: req.session.profile_picture,
+             });
 
     } catch (err) {
         res.status(500).json(err);
     }
 });
+
 
 router.get('/post', withAuth, async (req, res) => {
     try {

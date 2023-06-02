@@ -1,24 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const profilePic = document.querySelector("#profile-pic");
+    const updatePictureButton = document.querySelector("#update-picture");
+    const fileInput = document.querySelector("#upload-picture");
+    const loadingSpinner = document.createElement('div');
+    loadingSpinner.className = 'spinner-border';
+    loadingSpinner.role = 'status';
 
     function handleUpload(event) {
         event.preventDefault();
-
-        const fileInput = document.querySelector("#upload-picture");
+        
         const file = fileInput.files[0];
-
-        console.log(file);
         
         if (!file) {
-            console.error('No file selected');
+            alert('No file selected');
             return;
         }
 
         let formData = new FormData();
         formData.append('upload-picture', file);
 
-        console.log(formData, 'formData');
-
-        console.log('about to fetch');
+        updatePictureButton.disabled = true;
+        updatePictureButton.appendChild(loadingSpinner);
 
         fetch('/api/user/upload', {
             method: 'POST',
@@ -26,27 +28,35 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('fetch response: ', data);
             if (data.error) {
-                console.error(data.error);
-            } else {
-                /*
-                return fetch('/api/user/update/profile-picture', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ location: data.fileUrl })
-                });
-                */
+                throw new Error(data.error);
             }
+
+            return fetch('/api/user/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ location: data.fileUrl })
+            });
         })
-        .catch((error) => {
-            console.error('Error: ', error);
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            profilePic.src = data.newPictureUrl;
+            alert('Profile picture updated successfully!');
+        })
+        .catch(error => {
+            alert(`An error occurred: ${error.message}`);
+        })
+        .finally(() => {
+            updatePictureButton.removeChild(loadingSpinner);
+            updatePictureButton.disabled = false;
         });
     }
 
-    const updatePictureButton = document.querySelector("#update-picture");
     updatePictureButton.addEventListener("click", handleUpload);
-
 });
