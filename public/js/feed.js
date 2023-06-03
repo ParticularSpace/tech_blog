@@ -34,8 +34,6 @@ likeButtons.forEach(button => {
   });
 });
 
-
-
 const commentButtons = document.querySelectorAll('.comment-button');
 const commentInputs = document.querySelectorAll('.comment-input');
 const commentSubmitButtons = document.querySelectorAll('.comment-input .btn');

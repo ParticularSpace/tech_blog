@@ -185,7 +185,32 @@ router.get('/account', withAuth, async (req, res) => {
 
 router.get('/post', withAuth, async (req, res) => {
     try {
-        res.render('post')
+        const userData = await User.findOne({
+            where: {
+                email: req.session.email
+            },
+            attributes: { exclude: ['password'] }  
+        });
+        
+        console.log(userData, 'userData')
+
+        if (!userData) {
+          
+            res.status(404).json({ message: 'No user found with this email!' });
+            return;
+        }
+
+     
+        const user = userData.get({ plain: true });
+
+
+        
+        res.render('post', {
+             user,
+            logged_in: req.session.logged_in,
+            profile_picture: req.session.profile_picture,
+             });
+
     } catch (err) {
         res.status(500).json(err);
     }

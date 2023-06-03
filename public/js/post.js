@@ -29,6 +29,8 @@ document.querySelector('form').addEventListener('submit', function(event) {
     })
     .then(data => {
         console.log('The post was saved successfully:', data);
+        // Redirect the user to the dashboard
+        return window.location.replace('/dashboard');
     })
     .catch(error => {
         console.error('There was an error:', error);
