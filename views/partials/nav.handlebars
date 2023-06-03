@@ -19,9 +19,11 @@
       <div class="container-fluid">
         <ul class="navbar-menu">
           <li class="navbar-item">
+            {{#if profile_picture}}
             <a href="/account" class="navbar-link">
               <img src="{{ profile_picture }}" alt="Profile Picture" class="profile-pic" />
             </a>
+            {{/if}}
           </li>
           <li class="navbar-item">
             <a href="/login" class="navbar-link">LOGIN</a>

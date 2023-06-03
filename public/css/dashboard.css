@@ -88,14 +88,22 @@ body {
 }
 
 .comments {
-    display: none; /* initially hide the comment section */
+    display: none;
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-  
+
+.comment-input.show-input {
+    display: flex;
+}
+
 .show-comments {
     display: block; /* show the comment section when this class is added */
 }
 
 .comment-input {
+    display: none;
     width: 100%;
     padding: 0.5rem;
     margin: 0.5rem 0;

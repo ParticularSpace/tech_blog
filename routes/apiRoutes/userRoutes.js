@@ -185,12 +185,19 @@ router.post('/posts/:id/comment', withAuth, async (req, res) => {
             post_id: req.params.id
         });
 
+        // Fetch the user who made the comment
+        const user = await User.findOne({ where: { id: req.session.user_id } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         res.status(200).json({ 
             success: true, 
             comment: {
               content: commentData.content,
               id: commentData.id,
-              user_id: commentData.user_id
+              user_id: commentData.user_id,
+              username: user.username // Include the username in the response
             } 
           });
           
@@ -198,6 +205,7 @@ router.post('/posts/:id/comment', withAuth, async (req, res) => {
         res.status(500).json(err);
     }
 });
+
 
 
 
