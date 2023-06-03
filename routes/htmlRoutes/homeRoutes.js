@@ -38,11 +38,11 @@ router.get('/', async (req, res) => {
 router.get('/dashboard', async (req, res) => {
     console.log(req.session, 'req.session in /dashboard')
     try {
-        // // Ensure the user is logged in
-        // if (!req.session.logged_in) {
-        //     res.redirect('/login');
-        //     return;
-        // }
+        // Ensure the user is logged in
+        if (!req.session.logged_in) {
+            res.redirect('/login');
+            return;
+        }
 
         // Fetch user first
         const user = await User.findOne({
