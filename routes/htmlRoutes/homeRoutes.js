@@ -44,20 +44,21 @@ router.get('/dashboard', async (req, res) => {
                     model: User, 
                     attributes: ['username'] 
                 },
-                { 
+                {
                     model: Comment,
                     attributes: ['id', 'content', 'user_id'],
                     include: {
-                        model: User, 
-                        attributes: ['username'] 
+                      model: User, 
+                      attributes: ['username'], 
                     },
-                    order: [['created_at', 'DESC']], // order comments by newest first
-                }
+                    order: [['created_at', 'DESC']], 
+                  }
             ],
             order: [['createdAt', 'DESC']]
         });
         
-        console.log(postsData, 'postsData in dashboard.js');
+        
+        console.log(postsData, 'postsData in dashboard.js !!!!!!!!!!!!!!!!!!!!!!!!!!!');
         
         const likesData = await Like.findAll({
             attributes: [
@@ -76,19 +77,21 @@ router.get('/dashboard', async (req, res) => {
         const posts = postsData.map((post) => {
             const postPlain = post.get({ plain: true });
             postPlain.likes_count = likesCountMap[post.id] || 0;
-            postPlain.comments = post.comments || [];
-          
+            
+
+            postPlain.comments = post.comments.map(comment => comment.get({ plain: true }));
+            
             // Check if user has liked this post
             postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
             
-            // Log each comment separately for testing
-            postPlain.comments.forEach(comment => console.log(comment.get({ plain: true })));
+           
+            postPlain.comments.forEach(comment => console.log(comment));
             
-            console.log(postPlain, 'postPlain in dashboard.js');
             return postPlain;
-          });
-          
+        });
+        
 
+          console.log(posts, 'posts in dashboard.jAHHHHHHHHHHHHHHHHHHHHHHHHHH');
 
         res.render('dashboard', { 
             posts, 
