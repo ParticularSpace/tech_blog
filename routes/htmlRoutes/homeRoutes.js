@@ -52,43 +52,39 @@ router.get('/dashboard', async (req, res) => {
                       attributes: ['username'], 
                     },
                     order: [['created_at', 'DESC']], 
-                  }
+                }
             ],
             order: [['createdAt', 'DESC']]
         });
         
-        
-        console.log(postsData, 'postsData in dashboard.js !!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        
-        const likesData = await Like.findAll({
+        // Fetch comments count
+        const commentsData = await Comment.findAll({
             attributes: [
                 'post_id',
-                [sequelize.fn('count', sequelize.col('id')), 'likes_count']
+                [sequelize.fn('count', sequelize.col('id')), 'comments_count']
             ],
             group: ['post_id']
         });
         
-        let likesCountMap = {};
-        likesData.forEach((like) => {
-          likesCountMap[like.dataValues.post_id] = like.dataValues.likes_count;
+        let commentsCountMap = {};
+        commentsData.forEach((comment) => {
+          commentsCountMap[comment.dataValues.post_id] = comment.dataValues.comments_count;
         });
         
         // Combine posts, likes, and comments
         const posts = postsData.map((post) => {
             const postPlain = post.get({ plain: true });
             postPlain.likes_count = likesCountMap[post.id] || 0;
-            
-
+            postPlain.comments_count = commentsCountMap[post.id] || 0; 
+        
             postPlain.comments = post.comments.map(comment => comment.get({ plain: true }));
             
             // Check if user has liked this post
             postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
             
-           
-            postPlain.comments.forEach(comment => console.log(comment));
-            
             return postPlain;
         });
+        
         
 
           console.log(posts, 'posts in dashboard.jAHHHHHHHHHHHHHHHHHHHHHHHHHH');

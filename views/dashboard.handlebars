@@ -26,7 +26,10 @@
                             data-post-id="{{this.id}}"> ♡
                             <span class="likes-count" data-post-id="{{this.id}}">{{this.likes_count}}</span>
                         </a>
-                        <a href="#" class="btn btn-secondary comment-button" data-post-id="{{this.id}}"> 💬 </a>
+                        <a href="#" class="btn btn-secondary comment-button" data-post-id="{{this.id}}"> 💬
+                            <span class="comments-count" data-post-id="{{this.id}}">{{this.comments.length}}</span>
+                        </a>
+
                         <!-- Comment input field -->
                         <div class="input-group mb-3 comment-input" data-post-id="{{this.id}}" style="display: none;">
                             <input type="text" class="form-control" placeholder="Add a comment...">
@@ -36,15 +39,13 @@
                         </div>
                         <!-- End comment input field -->
                     </div>
-                    <div class="comments">
+                    <div class="comments" id="comments-{{this.id}}">
                         <ul class="list-group list-group-flush">
                             {{#each this.comments}}
                             <li class="list-group-item"><strong>{{this.user.username}}:</strong> {{this.content}}</li>
                             {{/each}}
                         </ul>
                     </div>
-
-
                 </div>
                 {{/each}}
             </div>

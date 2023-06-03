@@ -45,11 +45,16 @@ commentButtons.forEach(button => {
     e.preventDefault();
     const postId = this.dataset.postId;
 
-    // Find the corresponding comment input field and show it
+    // Find the  comment input field and show it
     const commentInput = Array.from(commentInputs).find(input => input.dataset.postId === postId);
     commentInput.style.display = 'flex';
+
+    // Find the  comment section and toggle its visibility
+    const commentsSection = document.querySelector(`#comments-${postId}`);
+    commentsSection.classList.toggle('show-comments');
   });
 });
+
 
 commentSubmitButtons.forEach(button => {
   button.addEventListener('click', function(e) {
@@ -73,10 +78,10 @@ commentSubmitButtons.forEach(button => {
       .then(data => {
         if (data.success) {
           // If successful, append the new comment to the comments section
-          const commentElement = document.createElement('div'); // Or whatever element you want to use
+          const commentElement = document.createElement('div'); 
           console.log(data, 'data in feed.js');
-          commentElement.textContent = data.comment.content; // Assuming the comment has a "content" field
-          document.querySelector('#comments').appendChild(commentElement); // Assuming you have a div with id="comments" for displaying comments
+          commentElement.textContent = data.comment.content; 
+          document.querySelector('#comments').appendChild(commentElement); 
         }
       })
       .catch(error => console.error('Error:', error));
