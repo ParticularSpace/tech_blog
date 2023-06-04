@@ -43,11 +43,11 @@ commentButtons.forEach(button => {
       e.preventDefault();
       const postId = this.dataset.postId;
 
-      // Find the corresponding comment input field and toggle its visibility
+      // Find the comment input field and toggle its visibility
       const commentInput = Array.from(commentInputs).find(input => input.dataset.postId === postId);
       commentInput.classList.toggle('show-input');  // Toggle the visibility using a class
 
-      // Find the corresponding comment section and toggle its visibility
+      // toggle its visibility
       const commentsSection = document.querySelector(`#comments-${postId}`);
       commentsSection.classList.toggle('show-comments');
   });
@@ -62,7 +62,7 @@ commentSubmitButtons.forEach(button => {
   button.addEventListener('click', function(e) {
     e.preventDefault();
 
-    // Find the closest parent comment input field
+    // Find the closest parent 
     const commentInputField = this.closest('.comment-input');
 
     const postId = commentInputField.dataset.postId;

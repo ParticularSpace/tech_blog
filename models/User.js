@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize'); 
 const sequelize = require('../config/connection'); 
-const bcrypt = require('bcrypt'); // Import the bcrypt library for password hashing
+const bcrypt = require('bcrypt'); 
+const { tr } = require('faker/lib/locales');
 
 class User extends Model {
   async checkPassword(loginPw) {
@@ -21,14 +22,14 @@ User.init(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true, // Ensures that each username is unique
+      unique: false, 
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true, // Ensures that each email is unique
+        unique: false, 
         validate: {
-            isEmail: true, // Uses a regular expression to validate whether the email is in the correct format
+            isEmail: true, //  email in correct format
         },
     },
     date_of_birth: {
@@ -41,6 +42,7 @@ User.init(
     phone_number: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             isNumeric: true,
             len: [10],

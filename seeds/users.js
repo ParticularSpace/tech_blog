@@ -1,48 +1,19 @@
 const { User } = require('../models');
+const faker = require('faker');
 
-const userData = [
-    {
-        username: 'user1',
-        email: 'user1@example.com',
-        date_of_birth: '1990-01-01',
-        phone_number: '1234567890',
-        password: 'password1',
-        profile_picture: null
-    },
-    {
-        username: 'user2',
-        email: 'user2@example.com',
-        date_of_birth: '1990-01-01',
-        phone_number: '1234567890',
-        password: 'password2',
-        profile_picture: null
-    },
-    {
-        username: 'user3',
-        email: 'user3@example.com',
-        date_of_birth: '1990-01-01',
-        phone_number: '1234567890',
-        password: 'password3',
-        profile_picture: null
-    },
-    {
-        username: 'user4',
-        email: 'user4@example.com',
-        date_of_birth: '1990-01-01',
-        phone_number: '1234567890',
-        password: 'password4',
-        profile_picture: null
-    },
-    {
-        username: 'user5',
-        email: 'user5@example.com',
-        date_of_birth: '1990-01-01',
-        phone_number: '1234567890',
-        password: 'password5',
-        profile_picture: null
-    }
-];
+const userData = [];
 
-const seedUsers = () => User.bulkCreate(userData, { individualHooks: true });
+for(let i=0; i<200; i++){
+  userData.push({
+    username: faker.internet.userName(),
+    email: faker.internet.email(),
+    date_of_birth: faker.date.past(),
+    phone_number: faker.phone.phoneNumber('1##########'),
+    password: faker.internet.password(),
+    // profile_picture: faker.internet.avatar()
+  });
+}
+
+const seedUsers = () => User.bulkCreate(userData);
 
 module.exports = seedUsers;

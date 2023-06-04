@@ -1,27 +1,16 @@
 const { Comment } = require('../models');
+const faker = require('faker');
 
-const commentData = [
-    {
-        content: 'This is the first comment.',
-        user_id: 1,
-        post_id: 1
-    },
-    {
-        content: 'This is the second comment.',
-        user_id: 2,
-        post_id: 1
-    },
-    {
-        content: 'This is the third comment.',
-        user_id: 3,
-        post_id: 4
-    },
-    {
-        content: 'This is the fourth comment.',
-        user_id: 4,
-        post_id: 2
-    },
-];
+const commentData = [];
+
+for (let i = 0; i < 500; i++) {
+    commentData.push({
+        content: faker.lorem.words(),
+        user_id: Math.floor(Math.random() * 120) + 1,
+        post_id: Math.floor(Math.random() * 120) + 1
+
+    });
+}
 
 const seedComments = () => Comment.bulkCreate(commentData);
 

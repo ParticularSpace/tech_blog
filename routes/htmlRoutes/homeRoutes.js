@@ -4,7 +4,7 @@ const { User, Post, Like, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 const sequelize = require('../../config/connection');
 
-
+// Catch all non-user routes and render the homepage
 router.get('/', async (req, res) => {
     try {
         const postsData = await Post.findAll({
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-
+// Render the dashboard if the user is logged in
 router.get('/dashboard', async (req, res) => {
     console.log(req.session, 'req.session in /dashboard')
     try {
@@ -60,6 +60,7 @@ router.get('/dashboard', async (req, res) => {
             return;
         }
 
+        // Fetch all posts
         const postsData = await Post.findAll({
             include: [
                 { 
@@ -79,8 +80,7 @@ router.get('/dashboard', async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
         
-        
-        console.log(postsData, 'postsData in dashboard.js !!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        // Fetch likes count for each post
         
         const likesData = await Like.findAll({
             attributes: [
@@ -106,14 +106,10 @@ router.get('/dashboard', async (req, res) => {
             // Check if user has liked this post
             postPlain.isLikedByCurrentUser = user.likedPosts.some(likedPost => likedPost.id === post.id);
             
-           
-            postPlain.comments.forEach(comment => console.log(comment));
             
             return postPlain;
         });
         
-
-          console.log(posts, 'posts in dashboard.jAHHHHHHHHHHHHHHHHHHHHHHHHHH');
 
         res.render('dashboard', { 
             posts, 

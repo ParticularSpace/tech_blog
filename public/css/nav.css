@@ -12,10 +12,10 @@
 }
 
 .profile-pic {
-    width: 50px;  /* Adjust as needed */
-    height: 50px; /* Adjust as needed */
-    object-fit: cover; /* This will ensure that the image covers the entire space of the specified width and height without stretching. */
-    border-radius: 50%; /* Optional: if you want to make the profile picture round */
+    width: 50px; 
+    height: 50px;
+    object-fit: cover; 
+    border-radius: 50%; 
 }
 
 

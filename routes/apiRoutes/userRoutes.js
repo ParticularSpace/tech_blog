@@ -3,7 +3,7 @@ const { User, Post, Comment, Like } = require("../../models");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const withAuth = require("../../utils/auth");
-const upload = require("../../config/s3"); // s3 middleware
+const upload = require("../../config/s3"); 
 
 // AWS S3 bucket configuration
 const bucketName = process.env.AWS_S3_BUCKET;
@@ -52,15 +52,19 @@ router.post("/signup", async (req, res) => {
       username: req.body.username,
       date_of_birth: req.body.date_of_birth,
       phone_number: req.body.phone_number,
-      profile_picture: req.body.profile_picture || null, // Use the provided profile picture or default to null
+      profile_picture: req.body.profile_picture || '/images/oh-no-space.gif', 
     });
 
-    // Create a session
-    req.session.save(() => {
-      req.session.email = userData.email;
-      req.session.logged_in = true;
-      res.status(200).json(userData);
-    });
+// Create a session
+req.session.save(() => {
+  req.session.user_id = userData.id; 
+  req.session.username = userData.username; 
+  req.session.email = userData.email;
+  req.session.logged_in = true;
+  req.session.profile_picture = userData.profile_picture || '/images/oh-no-space.gif';
+  res.status(200).json(userData);
+});
+
   } catch (err) {
     console.error(err.message);
     console.error(err.stack);
@@ -92,6 +96,7 @@ router.post("/login", async (req, res) => {
       req.session.username = userData.username;
 
       res.json({ user: userData, message: "You are now logged in!" });
+  
     });
 
     console.log(req.session, "req.session");
@@ -100,7 +105,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Logout route
+// Logout route GOOD
 router.post("/logout", async (req, res) => {
     console.log(req.session, "req.session in /logout")
   try {
@@ -121,11 +126,9 @@ router.post("/logout", async (req, res) => {
 router.post("/post", withAuth, async (req, res) => {
   console.log(req.body, "req.body in /post");
   try {
-    // Assuming user_id is stored in req.session.user_id when the user logs in
     const postData = await Post.create({
       title: req.body.title,
       content: req.body.content,
-      // image: req.body.image || null,
       user_id: req.session.user_id, // Associate the post with the logged in user
     });
 
@@ -137,16 +140,14 @@ router.post("/post", withAuth, async (req, res) => {
   }
 });
 
-// Route to like a post
+// Route to like a post GOOD
 router.post("/posts/:id/like", async (req, res) => {
   console.log("route hit");
   console.log(req.body, "req.body");
   try {
     const postId = req.params.id;
-    const userId = req.session.user_id; // or however you track logged in users
+    const userId = req.session.user_id; 
 
-    console.log(postId, "postId");
-    console.log(req.session.user_id, "req.session RIGHT HERE YOOOOOOO");
 
     const post = await Post.findByPk(postId, {
       include: { model: User, as: "likers" },
@@ -155,11 +156,8 @@ router.post("/posts/:id/like", async (req, res) => {
       include: { model: Post, as: "likedPosts" },
     });
 
-    console.log(post, "post HERE !!!!!");
-    console.log(user, "user HERE !!!!!");
 
     if (!post || !user) {
-      // either post or user does not exist
       return res.status(404).json({ message: "Post or user not found" });
     }
 
@@ -182,7 +180,7 @@ router.post("/posts/:id/like", async (req, res) => {
   }
 });
 
-// Route to comment on a post
+// Route to comment on a post GOOD
 router.post("/posts/:id/comment", withAuth, async (req, res) => {
   try {
     const postData = await Post.findOne({ where: { id: req.params.id } });
@@ -218,25 +216,20 @@ router.post("/posts/:id/comment", withAuth, async (req, res) => {
 
 // Upload GOOD
 router.post("/upload", upload.single("upload-picture"), async (req, res) => {
-  console.log("/upload route hit !!!");
   const fileName = req.file.key; // the key of the uploaded file
   console.log(fileName, "fileName here look this is it");
   const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`;
 
-  console.log(fileUrl, "fileUrl");
-
-  console.log(req.session, "req.session in /upload HERE !!!!!");
 
   // Update the session
   req.session.profile_picture = fileUrl;
 
-  console.log(req.session.profile_picture, "req.session.user.profilePicture");
 
   // Update the database
   try {
     await User.update(
       { profile_picture: fileUrl }, // new data to update
-      { where: { id: req.session.user.id } } // where clause
+      { where: { id: req.session.user.id } }
     );
   } catch (error) {
     console.error("Failed to update profile_picture in the database:", error);
@@ -268,6 +261,9 @@ router.put("/update", withAuth, async (req, res) => {
       .json({ error: "An error occurred while updating the profile picture" });
   }
 });
+
+
+// FUTURE DEVELOPMENT
 
 // update user name
 router.put("/update/username", withAuth, async (req, res) => {

@@ -4,11 +4,11 @@ let userData = {
   username: '',  
   date_of_birth: '',
   phone_number: '',
-  profile_picture: 'https://via.placeholder.com/150', 
+  profile_picture: '/images/oh-no-space.gif', 
 };
 
 const signupHandler = async (event) => {
-  event.preventDefault(); // Prevent form submission
+  event.preventDefault(); 
 
   const firstname = document.querySelector('#firstname').value.trim();
   const lastname = document.querySelector('#lastname').value.trim();
@@ -46,9 +46,9 @@ const signupHandler = async (event) => {
 };
 
 const passwordHandler = async (event) => {
-  event.preventDefault(); // Prevent form submission
+  event.preventDefault();
 
-  const password = document.querySelector('#password').value.trim(); // Get the entered password
+  const password = document.querySelector('#password').value.trim(); 
   const password_confirm = document.querySelector('#password_confirm').value.trim(); // Get the confirmed password
 
   if (password && password_confirm) {
@@ -57,9 +57,9 @@ const passwordHandler = async (event) => {
       return;
     }
 
-    userData.password = password; // Add the password to userData
+    userData.password = password; 
 
-    // Send a POST request to the register endpoint
+    
     const response = await fetch('/api/user/signup', { 
       method: 'POST',
       headers: {
@@ -68,9 +68,9 @@ const passwordHandler = async (event) => {
       body: JSON.stringify(userData),
     });
 
-    // If the registration is successful, redirect to the login page.
+    
     if (response.ok) {
-      document.location.replace('/');
+      document.location.replace('/dashboard');
     } else {
       alert('Failed to register');
     }

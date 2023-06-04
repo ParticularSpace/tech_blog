@@ -5,7 +5,6 @@ class Post extends Model {}
 
 Post.init(
     {
-        // define columns
         id: {
             type: DataTypes.INTEGER,
             allowNull: false,
