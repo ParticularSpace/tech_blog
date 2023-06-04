@@ -4,7 +4,7 @@
   
   ## URL
   
-https://mate-blog.herokuapp.com/
+    https://mate-blog.herokuapp.com/
 
   ## Description
 
@@ -30,7 +30,7 @@ https://mate-blog.herokuapp.com/
   
   ## Images
   
-  ![Login](public/images/screenshot.png "Login")
+  ![Login](/images/screenshot.png "Login")
   
   ## License
 
