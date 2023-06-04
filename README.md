@@ -4,7 +4,7 @@
   
   ## URL
   
-    https://mate-blog.herokuapp.com/
+  https://mate-blog.herokuapp.com/
 
   ## Description
 
