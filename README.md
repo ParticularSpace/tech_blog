@@ -30,7 +30,7 @@
   
   ## Images
   
-  ![Login](/images/screenshot.png "Login")
+  ![Login](public/images/screenshot.png "Login")
   
   ## License
 
