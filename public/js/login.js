@@ -1,4 +1,4 @@
-// Create a new 'Login' POST request
+// Login function
 async function loginFormHandler(event) {
     event.preventDefault();
     const email = document.querySelector('#email-login').value.trim();
@@ -25,3 +25,8 @@ async function loginFormHandler(event) {
 }
 
 document.querySelector('.login-form').addEventListener('submit', loginFormHandler);
+
+
+
+
+

@@ -102,10 +102,11 @@ router.post("/login", async (req, res) => {
 
 // Logout route
 router.post("/logout", async (req, res) => {
+    console.log(req.session, "req.session in /logout")
   try {
     if (req.session.logged_in) {
       req.session.destroy(() => {
-        res.status(204).json({ message: "Logout successful" });
+        res.status(200).json({ message: "Logout successful" });
       });
     } else {
       res.status(404).json({ message: "User not logged in" });
@@ -114,6 +115,7 @@ router.post("/logout", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Route to post a new post GOOD
 router.post("/post", withAuth, async (req, res) => {
