@@ -20,6 +20,10 @@
                 {{#each posts}}
                 <div class="card mt-3">
                     <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ profile_picture }}" alt="Profile Picture" class="profile-pic mr-2" />
+                            <h4 class="card-title mb-0">{{this.user.username}}</h4>
+                        </div>
                         <h5 class="card-title">{{this.title}}</h5>
                         <p class="card-text">{{this.content}}</p>
                         <a href="#" class="btn btn-primary like-button {{#if this.isLikedByCurrentUser}}liked{{/if}}"

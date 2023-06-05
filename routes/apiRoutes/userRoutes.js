@@ -130,6 +130,7 @@ router.post("/post", withAuth, async (req, res) => {
       title: req.body.title,
       content: req.body.content,
       user_id: req.session.user_id, // Associate the post with the logged in user
+      profile_picture: req.session.profile_picture,
     });
 
     console.log(postData, "postData");

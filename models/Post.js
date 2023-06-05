@@ -30,6 +30,11 @@ Post.init(
                 key: 'id',
                 },
             },
+        profile_picture: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        
         },
     {
         sequelize,

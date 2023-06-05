@@ -40,7 +40,7 @@
 
   Sam Jones,
   Stack Overflow (aws s3 issues),
-  chatGPT (faker seed help, css boilerplate)
+  chatGPT (faker seed help, css, boilerplate)
   Manny, (Class notes)
 
   ## Tests
