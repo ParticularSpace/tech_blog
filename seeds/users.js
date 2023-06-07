@@ -8,7 +8,6 @@ for(let i=0; i<200; i++){
     username: faker.internet.userName(),
     email: faker.internet.email(),
     date_of_birth: faker.date.past(),
-    phone_number: faker.phone.phoneNumber('1##########'),
     password: faker.internet.password(),
     // profile_picture: faker.internet.avatar()
   });
