@@ -39,15 +39,7 @@ User.init(
             isDate: true, 
         },
     },
-    phone_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isNumeric: true,
-            len: [10],
-        },
-    },
+    
     password: {
       type: DataTypes.STRING,
       allowNull: false,

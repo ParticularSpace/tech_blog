@@ -3,9 +3,19 @@ let userData = {
   password: '',  
   username: '',  
   date_of_birth: '',
-  phone_number: '',
   profile_picture: '/images/oh-no-space.gif', 
 };
+
+const showErrorModal = (message) => {
+  document.querySelector('#errorModalText').textContent = message;
+  $('#errorModal').modal('show');
+};
+
+//handle teh close button on the modal
+document.querySelector('#errorModalClose').addEventListener('click', () => {
+  $('#errorModal').modal('hide');
+});
+
 
 const signupHandler = async (event) => {
   event.preventDefault(); 
@@ -14,13 +24,11 @@ const signupHandler = async (event) => {
   const lastname = document.querySelector('#lastname').value.trim();
   const email = document.querySelector('#email').value.trim();
   const dob = document.querySelector('#dob').value.trim();
-  const phone = document.querySelector('#phone').value.trim();
 
-  if (firstname && lastname && email && dob && phone) {
+  if (firstname && lastname && email && dob) {
     userData.email = email;
-    userData.username = firstname + " " + lastname;
+    userData.username = firstname + lastname;
     userData.date_of_birth = dob;
-    userData.phone_number = phone;
 
     // Replace the form
     document.querySelector('#signup-form').outerHTML = `
@@ -53,7 +61,7 @@ const passwordHandler = async (event) => {
 
   if (password && password_confirm) {
     if (password !== password_confirm) {
-      alert('Passwords do not match');
+      showErrorModal('Passwords do not match');
       return;
     }
 
@@ -72,7 +80,8 @@ const passwordHandler = async (event) => {
     if (response.ok) {
       document.location.replace('/dashboard');
     } else {
-      alert('Failed to register');
+      const data = await response.json();
+      showErrorModal(data.message || 'Failed to register');
     }
   }
 };

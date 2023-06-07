@@ -27,8 +27,7 @@ router.post("/signup", async (req, res) => {
       !req.body.email ||
       !req.body.password ||
       !req.body.username ||
-      !req.body.date_of_birth ||
-      !req.body.phone_number
+      !req.body.date_of_birth 
     ) {
       return res
         .status(400)
@@ -51,7 +50,6 @@ router.post("/signup", async (req, res) => {
       password: hashedPassword,
       username: req.body.username,
       date_of_birth: req.body.date_of_birth,
-      phone_number: req.body.phone_number,
       profile_picture: req.body.profile_picture || '/images/oh-no-space.gif', 
     });
 
